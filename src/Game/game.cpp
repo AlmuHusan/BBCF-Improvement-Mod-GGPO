@@ -9,6 +9,8 @@ std::unique_ptr<CharData> gP1Data;
 std::unique_ptr<CharData> gP2Data;
 std::unique_ptr<ObjData> gP1Effect;
 std::unique_ptr<ObjData> gP2Effect;
+
+std::array<std::unique_ptr<ObjData>, 400 > gEntityList;
 /// <summary>
 /// Gets the pointer data pointers in BBCF's memory, so we can access and write to them later for
 /// saving and loading state
@@ -70,6 +72,9 @@ void InitGameStatePointers()
     gGameState->time = (int*)(base + pointer_offsets::time);
     GetPlayerPointers(base + pointer_offsets::player1, gGameState->player1, "Player 1");
     GetPlayerPointers(base + pointer_offsets::player2, gGameState->player2, "Player 2");
+    for (int i = 0; i < gEntityList.max_size() - 1;i++) {
+        gEntityList[i]= std::make_unique<ObjData>();
+    }
 }
 
 }

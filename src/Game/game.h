@@ -264,7 +264,7 @@ namespace pointer_offsets {
     static const unsigned int time      = 0xDA0CE8;
     static const unsigned int player1   = 0x819DF0;
     static const unsigned int player2   = 0xDC204C;
-
+    static const unsigned int entityList = 0xDA068C;
     namespace player_common {
         static const std::array<unsigned int, 1> health = { 0x9D4 };
         static const std::array<unsigned int, 1> xpos   = { 0x268 };
@@ -319,6 +319,15 @@ typedef struct SavedGameState {
 
 } SavedGameState;
 
+static void SaveEntityList() {
+    auto base = (uintptr_t)Containers::gameProc.hBBCFGameModule;
+    uintptr_t* currentEntity;
+    for (int i = 0;i < 399;i++) {
+        currentEntity = (uintptr_t*)(base + pointer_offsets::entityList + (unsigned)4 * i);
+        logObject(currentEntity);
+    }
+}
+
 static SavedGameState SaveGameState()
 {
     SavedGameState game_state;
@@ -348,11 +357,13 @@ static SavedGameState SaveGameState()
 
     std::vector<uintptr_t*> effect_list = { p1_effect,p2_effect };
     logGameState((uintptr_t*)(base + pointer_offsets::time), p1_ref, p2_ref, effect_list);
-
+    SaveEntityList();
     std::memcpy(gP1Data->data(), (unsigned char*)(p1_dref), 0x214C4);
     std::memcpy(gP2Data->data(), (unsigned char*)(p2_dref), 0x214C4);
-    std::memcpy(gP1Effect->data(), (unsigned char*)(p1_effectdref), 0x220C);
-    std::memcpy(gP2Effect->data(), (unsigned char*)(p2_effectdref), 0x220C);
+
+
+    //std::memcpy(gP1Effect->data(), (unsigned char*)(p1_effectdref), 0x220C);
+    //std::memcpy(gP2Effect->data(), (unsigned char*)(p2_effectdref), 0x220C);
     return game_state;
 }
 
@@ -380,9 +391,12 @@ static void LoadGameState(SavedGameState const& game_state)
 
     std::memcpy((unsigned char*)p1_dref, gP1Data->data(), 0x214C4);
     std::memcpy((unsigned char*)p2_dref, gP2Data->data(), 0x214C4);
-    std::memcpy((unsigned char*)(p1_effectdref), gP1Effect->data(), 0x220C);
-    std::memcpy((unsigned char*)(p2_effectdref), gP2Effect->data(), 0x220C);
+    //std::memcpy((unsigned char*)(p1_effectdref), gP1Effect->data(), 0x220C);
+    //std::memcpy((unsigned char*)(p2_effectdref), gP2Effect->data(), 0x220C);
 }
+
+
+
 
 /*
 struct GameObjectScriptingStruct {

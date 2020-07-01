@@ -59,6 +59,12 @@ void logGameState(uintptr_t* time, uintptr_t* p1, uintptr_t* p2, std::vector<uin
 	//fprintf(g_oFile, ("P2 Address: " + uint_to_hex((unsigned int)objectData[i]) + " Value: " + uint_to_hex(*objectData[0]) + "\n").c_str());
 	fflush(g_oFile);
 }
+void logObject(uintptr_t* object)
+{
+	fprintf(g_oFile, ("Object Addr: " + uint_to_hex((unsigned int)object) + "Object Value: " + uint_to_hex(*object) + "\n").c_str());
+
+	fflush(g_oFile);
+}
 
 
 char* getFullDate()
