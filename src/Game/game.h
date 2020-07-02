@@ -302,9 +302,9 @@ void InitGameStatePointers();
 
 extern std::unique_ptr<std::array<unsigned char, 0x214C4 >> gP1Data;
 extern std::unique_ptr<std::array<unsigned char, 0x214C4 >> gP2Data;
-extern std::unique_ptr<std::array<unsigned char, 0x220c >> gP1Effect;
-extern std::unique_ptr<std::array<unsigned char, 0x220c >> gP2Effect;
-extern std::array<std::unique_ptr<std::array<unsigned char, 0x220c >>, 400 > gEntityList;
+extern std::unique_ptr<std::array<unsigned char, 0x2254 >> gP1Effect;
+extern std::unique_ptr<std::array<unsigned char, 0x2254 >> gP2Effect;
+extern std::array<std::unique_ptr<std::array<unsigned char, 0x2254 >>, 400 > gEntityList;
 
 typedef struct SavedGameState {
 
@@ -323,19 +323,19 @@ typedef struct SavedGameState {
 static void SaveEntityList() {
     auto base = (uintptr_t)Containers::gameProc.hBBCFGameModule;
     uintptr_t* currentEntity;
-    for (int i = 0;i < 275;i++) {
+    for (int i = 0;i < 399;i++) {
         currentEntity = (uintptr_t*)(base + pointer_offsets::entityList + (unsigned)4 * i);
         logObject(currentEntity);
-        std::memcpy(gEntityList[i]->data(), (unsigned char*)(*currentEntity), 0x220c);
+        std::memcpy(gEntityList[i]->data(), (unsigned char*)(*currentEntity), 0x2254);
     }
 }
 
 static void LoadEntityList() {
     auto base = (uintptr_t)Containers::gameProc.hBBCFGameModule;
     uintptr_t* currentEntity;
-    for (int i = 0;i < 275;i++) {
+    for (int i = 0;i < 399;i++) {
         currentEntity = (uintptr_t*)(base + pointer_offsets::entityList + (unsigned)4 * i);
-        std::memcpy( (unsigned char*)(*currentEntity), gEntityList[i]->data(), 0x220c);
+        std::memcpy( (unsigned char*)(*currentEntity), gEntityList[i]->data(), 0x2254);
     }
 }
 
