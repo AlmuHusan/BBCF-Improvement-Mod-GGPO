@@ -265,6 +265,7 @@ namespace pointer_offsets {
     static const unsigned int player1   = 0x819DF0;
     static const unsigned int player2   = 0xDC204C;
     static const unsigned int entityList = 0xDA0680;
+    static const unsigned int entityListInfo = 0xDA0670;
     namespace player_common {
         static const std::array<unsigned int, 1> health = { 0x9D4 };
         static const std::array<unsigned int, 1> xpos   = { 0x268 };
@@ -305,7 +306,7 @@ extern std::unique_ptr<std::array<unsigned char, 0x214C4 >> gP2Data;
 extern std::unique_ptr<std::array<unsigned char, 0x2254 >> gP1Effect;
 extern std::unique_ptr<std::array<unsigned char, 0x2254 >> gP2Effect;
 extern std::array<std::unique_ptr<std::array<unsigned char, 0x2254 >>, 400 > gEntityList;
-
+extern std::unique_ptr<std::array<unsigned char, 0x16>> gEntityListInfo;
 typedef struct SavedGameState {
 
     struct Player {
@@ -322,10 +323,15 @@ typedef struct SavedGameState {
 
 static void SaveEntityList() {
     auto base = (uintptr_t)Containers::gameProc.hBBCFGameModule;
+
+    auto entityListInfo = (uintptr_t*)(base + pointer_offsets::entityListInfo);
+    logObject(entityListInfo);
+    std::memcpy(gEntityListInfo->data(), (unsigned char*)(entityListInfo), 0x16);
+
     auto entityListdref = *(uintptr_t*)(base + pointer_offsets::entityList);
     uintptr_t* currentEntity;
-    for (int i = 0;i < 399;i++) {
-        currentEntity = (uintptr_t*)(entityListdref + (unsigned)4 * i);
+    for (int i = 0;i < 400;i++) {
+        currentEntity = (uintptr_t*)(entityListdref + (unsigned)4*i + (unsigned)0x8);
         logObject(currentEntity);
         std::memcpy(gEntityList[i]->data(), (unsigned char*)(*currentEntity), 0x2254);
     }
@@ -333,10 +339,14 @@ static void SaveEntityList() {
 
 static void LoadEntityList() {
     auto base = (uintptr_t)Containers::gameProc.hBBCFGameModule;
+
+    auto entityListInfo = (uintptr_t*)(base + pointer_offsets::entityListInfo);
+    std::memcpy((unsigned char*)(entityListInfo), gEntityListInfo->data(), 0x16);
+
     auto entityListdref = *(uintptr_t*)(base + pointer_offsets::entityList);
     uintptr_t* currentEntity;
-    for (int i = 0;i < 399;i++) {
-        currentEntity = currentEntity = (uintptr_t*)(entityListdref + (unsigned)4 * i);
+    for (int i = 0;i < 400;i++) {
+        currentEntity = currentEntity = (uintptr_t*)(entityListdref + (unsigned)4*i + (unsigned)0x8);
         std::memcpy( (unsigned char*)(*currentEntity), gEntityList[i]->data(), 0x2254);
     }
 }
@@ -370,10 +380,10 @@ static SavedGameState SaveGameState()
 
     std::vector<uintptr_t*> effect_list = { p1_effect,p2_effect };
     logGameState((uintptr_t*)(base + pointer_offsets::time), p1_ref, p2_ref, effect_list);
-    
+    SaveEntityList();
     std::memcpy(gP1Data->data(), (unsigned char*)(p1_dref), 0x214C4);
     std::memcpy(gP2Data->data(), (unsigned char*)(p2_dref), 0x214C4);
-    SaveEntityList();
+    
 
     //std::memcpy(gP1Effect->data(), (unsigned char*)(p1_effectdref), 0x220C);
     //std::memcpy(gP2Effect->data(), (unsigned char*)(p2_effectdref), 0x220C);
@@ -404,7 +414,7 @@ static void LoadGameState(SavedGameState const& game_state)
     LoadEntityList();
     std::memcpy((unsigned char*)p1_dref, gP1Data->data(), 0x214C4);
     std::memcpy((unsigned char*)p2_dref, gP2Data->data(), 0x214C4);
-   
+    
     //std::memcpy((unsigned char*)(p1_effectdref), gP1Effect->data(), 0x220C);
     //std::memcpy((unsigned char*)(p2_effectdref), gP2Effect->data(), 0x220C);
 }

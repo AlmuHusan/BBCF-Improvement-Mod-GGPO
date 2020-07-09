@@ -61,7 +61,7 @@ void logGameState(uintptr_t* time, uintptr_t* p1, uintptr_t* p2, std::vector<uin
 }
 void logObject(uintptr_t* object)
 {
-	fprintf(g_oFile, ("Object Addr: " + uint_to_hex((unsigned int)object) + "Object Value: " + uint_to_hex(*object) + "\n").c_str());
+	fprintf(g_oFile, ("Object Addr: " + uint_to_hex((unsigned int)object) + " Object Value: " + uint_to_hex(*object) + "\n").c_str());
 
 	fflush(g_oFile);
 }
