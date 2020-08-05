@@ -7,8 +7,6 @@ using ObjData = std::array<unsigned char, 0x2254 >;
 std::unique_ptr<GameState> gGameState;
 std::unique_ptr<CharData> gP1Data;
 std::unique_ptr<CharData> gP2Data;
-std::unique_ptr<ObjData> gP1Effect;
-std::unique_ptr<ObjData> gP2Effect;
 
 std::array<std::unique_ptr<ObjData>, 400 > gEntityList;
 std::unique_ptr<std::array<unsigned char, 0x16>> gEntityListInfo;
@@ -56,8 +54,6 @@ void InitGameStatePointers()
     gGameState = std::make_unique<GameState>();
     gP1Data = std::make_unique<CharData>();
     gP2Data = std::make_unique<CharData>();
-    gP1Effect = std::make_unique<ObjData>();
-    gP2Effect = std::make_unique<ObjData>();
     gEntityListInfo = std::make_unique<std::array<unsigned char, 0x16>>();
     auto get_address_or_log = [](std::string const& name, uintptr_t base, auto offsets) {
         uintptr_t addr = FindAddress(base, offsets);

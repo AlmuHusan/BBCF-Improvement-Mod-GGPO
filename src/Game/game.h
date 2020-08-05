@@ -303,8 +303,6 @@ void InitGameStatePointers();
 
 extern std::unique_ptr<std::array<unsigned char, 0x214C4 >> gP1Data;
 extern std::unique_ptr<std::array<unsigned char, 0x214C4 >> gP2Data;
-extern std::unique_ptr<std::array<unsigned char, 0x2254 >> gP1Effect;
-extern std::unique_ptr<std::array<unsigned char, 0x2254 >> gP2Effect;
 extern std::array<std::unique_ptr<std::array<unsigned char, 0x2254 >>, 400 > gEntityList;
 extern std::unique_ptr<std::array<unsigned char, 0x16>> gEntityListInfo;
 typedef struct SavedGameState {
@@ -374,19 +372,14 @@ static SavedGameState SaveGameState()
     auto p2_dref = *p2_ref;
 
     auto p1_effect = (uintptr_t*)(p1_dref + pointer_offsets::player_common::currentEffect[0]);
-    auto p1_effectdref = *p1_effect;
     auto p2_effect = (uintptr_t*)(p2_dref + pointer_offsets::player_common::currentEffect[0]);
-    auto p2_effectdref = *p2_effect;
 
     std::vector<uintptr_t*> effect_list = { p1_effect,p2_effect };
     logGameState((uintptr_t*)(base + pointer_offsets::time), p1_ref, p2_ref, effect_list);
     SaveEntityList();
     std::memcpy(gP1Data->data(), (unsigned char*)(p1_dref), 0x214C4);
     std::memcpy(gP2Data->data(), (unsigned char*)(p2_dref), 0x214C4);
-    
 
-    //std::memcpy(gP1Effect->data(), (unsigned char*)(p1_effectdref), 0x220C);
-    //std::memcpy(gP2Effect->data(), (unsigned char*)(p2_effectdref), 0x220C);
     return game_state;
 }
 
@@ -407,16 +400,10 @@ static void LoadGameState(SavedGameState const& game_state)
     auto p1_dref = *(uintptr_t*)(base + pointer_offsets::player1);
     auto p2_dref = *(uintptr_t*)(base + pointer_offsets::player2);
 
-    auto p1_effect = (uintptr_t*)(p1_dref + pointer_offsets::player_common::currentEffect[0]);
-    auto p1_effectdref = *p1_effect;
-    auto p2_effect = (uintptr_t*)(p2_dref + pointer_offsets::player_common::currentEffect[0]);
-    auto p2_effectdref = *p2_effect;
     LoadEntityList();
     std::memcpy((unsigned char*)p1_dref, gP1Data->data(), 0x214C4);
     std::memcpy((unsigned char*)p2_dref, gP2Data->data(), 0x214C4);
-    
-    //std::memcpy((unsigned char*)(p1_effectdref), gP1Effect->data(), 0x220C);
-    //std::memcpy((unsigned char*)(p2_effectdref), gP2Effect->data(), 0x220C);
+
 }
 
 
