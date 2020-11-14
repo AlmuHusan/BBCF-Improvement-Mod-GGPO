@@ -66,7 +66,6 @@ void logObject(uintptr_t* object)
 	fflush(g_oFile);
 }
 
-
 char* getFullDate()
 {
 	time_t timer;

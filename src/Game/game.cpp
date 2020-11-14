@@ -3,13 +3,22 @@
 namespace game {
 
 using CharData = std::array<unsigned char, 0x214C4 >;
-using ObjData = std::array<unsigned char, 0x2254 >;
+using ObjData = std::array<unsigned char, 0x2244 >;
 std::unique_ptr<GameState> gGameState;
 std::unique_ptr<CharData> gP1Data;
 std::unique_ptr<CharData> gP2Data;
 
 std::array<std::unique_ptr<ObjData>, 400 > gEntityList;
 std::unique_ptr<std::array<unsigned char, 0x16>> gEntityListInfo;
+std::unique_ptr<std::array<unsigned char, 0x88>> gParticalEffectInfo;
+std::unique_ptr<std::array<unsigned char, 0x288>> gParticalEffectInfoP1;
+std::unique_ptr<std::array<unsigned char, 0x288>> gParticalEffectInfoP2;
+std::unique_ptr<std::array<unsigned char, 0x90>> gParticalEffectInfoP3;
+std::unique_ptr<std::array<unsigned char, 0x90>> gParticalEffectInfoP4;
+std::unique_ptr<std::array<unsigned char, 0xF8>> gParticalEffectInfoP5;
+std::unique_ptr<std::array<unsigned char, 0xF8>> gParticalEffectInfoP6;
+std::unique_ptr<std::array<unsigned char, 0xF8>> gParticalEffectInfoP7;
+std::unique_ptr<std::array<unsigned char, 0xF8>> gParticalEffectInfoP8;
 /// <summary>
 /// Gets the pointer data pointers in BBCF's memory, so we can access and write to them later for
 /// saving and loading state
@@ -55,6 +64,15 @@ void InitGameStatePointers()
     gP1Data = std::make_unique<CharData>();
     gP2Data = std::make_unique<CharData>();
     gEntityListInfo = std::make_unique<std::array<unsigned char, 0x16>>();
+    gParticalEffectInfo = std::make_unique<std::array<unsigned char, 0x88>>();
+    gParticalEffectInfoP1 = std::make_unique<std::array<unsigned char, 0x288>>();
+    gParticalEffectInfoP2 = std::make_unique<std::array<unsigned char, 0x288>>();
+    gParticalEffectInfoP3 = std::make_unique<std::array<unsigned char, 0x90>>();
+    gParticalEffectInfoP4 = std::make_unique<std::array<unsigned char, 0x90>>();
+    gParticalEffectInfoP5 = std::make_unique<std::array<unsigned char, 0xF8>>();
+    gParticalEffectInfoP6 = std::make_unique<std::array<unsigned char, 0xF8>>();
+    gParticalEffectInfoP7 = std::make_unique<std::array<unsigned char, 0xF8>>();
+    gParticalEffectInfoP8 = std::make_unique<std::array<unsigned char, 0xF8>>();
     auto get_address_or_log = [](std::string const& name, uintptr_t base, auto offsets) {
         uintptr_t addr = FindAddress(base, offsets);
 
