@@ -316,6 +316,10 @@ extern std::unique_ptr<std::array<unsigned char, 0xF8>> gParticalEffectInfoP5;
 extern std::unique_ptr<std::array<unsigned char, 0xF8>> gParticalEffectInfoP6;
 extern std::unique_ptr<std::array<unsigned char, 0xF8>> gParticalEffectInfoP7;
 extern std::unique_ptr<std::array<unsigned char, 0xF8>> gParticalEffectInfoP8;
+extern unsigned char* savedParticleP3;
+extern unsigned char* savedParticleP4;
+extern unsigned char* savedParticleP7;
+extern unsigned char* savedParticleP8;
 
 
 typedef struct SavedGameState {
@@ -348,32 +352,37 @@ static void SaveEntityList() {
     }
 
     auto particalEffect = (uintptr_t*)(base + pointer_offsets::particalEffect);
-    auto particalmessage = "begin particle save";
+    auto particalmessage = "begin particle save\n";
     logger(particalmessage);
     logObject(particalEffect);
-    logObject((uintptr_t*)(particalEffect + (unsigned)0x4));
+    logObject((uintptr_t*)(particalEffect + (unsigned)0x1));
+    logObject((uintptr_t*)(particalEffect + (unsigned)0x2));
+    
+    logObject((uintptr_t*)(particalEffect + (unsigned)0x7));
     logObject((uintptr_t*)(particalEffect + (unsigned)0x8));
-    logObject((uintptr_t*)(particalEffect + (unsigned)0x10));
-    logObject((uintptr_t*)(particalEffect + (unsigned)0x14));
-    logObject((uintptr_t*)(particalEffect + (unsigned)0x1C));
-    logObject((uintptr_t*)(particalEffect + (unsigned)0x20));
-    logObject((uintptr_t*)(particalEffect + (unsigned)0x28));
-    logObject((uintptr_t*)(particalEffect + (unsigned)0x2C));
+   
+    /*
+    std::memcpy(gParticalEffectInfo->data(), (unsigned char*)(particalEffect), 0x54);
 
-    std::memcpy(gParticalEffectInfo->data(), (unsigned char*)(particalEffect), 0x50);
-
-    std::memcpy(gParticalEffectInfoP1->data(), (unsigned char*) *(particalEffect+ (unsigned)0x4), 0x288);
-    std::memcpy(gParticalEffectInfoP2->data(), (unsigned char*) *(particalEffect+ (unsigned)0x8), 0x288);
-
-    std::memcpy(gParticalEffectInfoP3->data(), (unsigned char*)(particalEffect + (unsigned)0x10), 0x90);
-    std::memcpy(gParticalEffectInfoP4->data(), (unsigned char*)(particalEffect + (unsigned)0x14), 0x90);
-
-    std::memcpy(gParticalEffectInfoP5->data(), (unsigned char*)(particalEffect + (unsigned)0x1C), 0xF8);
-    std::memcpy(gParticalEffectInfoP6->data(), (unsigned char*)(particalEffect + (unsigned)0x20), 0xF8);
-
-    std::memcpy(gParticalEffectInfoP7->data(), (unsigned char*)(particalEffect + (unsigned)0x28), 0xF8);
-    std::memcpy(gParticalEffectInfoP8->data(), (unsigned char*)(particalEffect + (unsigned)0x2C), 0xF8);
-
+    std::memcpy(gParticalEffectInfoP1->data(), (unsigned char*) *(particalEffect+ (unsigned)0x1), 0x288);
+    std::memcpy(gParticalEffectInfoP2->data(), (unsigned char*) *(particalEffect+ (unsigned)0x2), 0x288);
+    savedParticleP3 = (unsigned char*)*(particalEffect + (unsigned)0x4);
+    if  (savedParticleP3!= 0) {
+        logObject((uintptr_t*)(particalEffect + (unsigned)0x4));
+        logObject((uintptr_t*)(particalEffect + (unsigned)0x5));
+        std::memcpy(gParticalEffectInfoP3->data(), (unsigned char*)*(particalEffect + (unsigned)0x4), 0x90);
+        std::memcpy(gParticalEffectInfoP4->data(), (unsigned char*)*(particalEffect + (unsigned)0x5), 0x90);
+    }
+    std::memcpy(gParticalEffectInfoP5->data(), (unsigned char*) *(particalEffect + (unsigned)0x7), 0xF8);
+    std::memcpy(gParticalEffectInfoP6->data(), (unsigned char*) *(particalEffect + (unsigned)0x8), 0xF8);
+    savedParticleP7 = (unsigned char*)*(particalEffect + (unsigned)0xA);
+    if (savedParticleP7 != 0) {
+        logObject((uintptr_t*)(particalEffect + (unsigned)0xA));
+        logObject((uintptr_t*)(particalEffect + (unsigned)0xB));
+        std::memcpy(gParticalEffectInfoP7->data(), (unsigned char*) *(particalEffect + (unsigned)0xA), 0xF8);
+        std::memcpy(gParticalEffectInfoP8->data(), (unsigned char*) *(particalEffect + (unsigned)0xB), 0xF8);
+    }
+    */
 
 
 
@@ -391,13 +400,26 @@ static void LoadEntityList() {
         currentEntity = currentEntity = (uintptr_t*)(entityListdref + (unsigned)4*i + (unsigned)0x8);
         std::memcpy( (unsigned char*)(*currentEntity), gEntityList[i]->data(), 0x2244);
     }
-
+    /*
     auto particalEffect = (uintptr_t*)(base + pointer_offsets::particalEffect);
-    std::memcpy( (unsigned char*)(particalEffect), gParticalEffectInfo->data(), 0x50);
+    std::memcpy( (unsigned char*)(particalEffect), gParticalEffectInfo->data(), 0x54);
 
+    std::memcpy((unsigned char*) *(particalEffect + (unsigned)0x1), gParticalEffectInfoP1->data(), 0x288);
+    std::memcpy((unsigned char*) *(particalEffect + (unsigned)0x2), gParticalEffectInfoP2->data(), 0x288);
+    logObject((uintptr_t*)savedParticleP3);
+    if (savedParticleP3 != 0) {
+        std::memcpy((unsigned char*)*(particalEffect + (unsigned)0x4), gParticalEffectInfoP3->data(), 0x90);
+        std::memcpy((unsigned char*)*(particalEffect + (unsigned)0x5), gParticalEffectInfoP4->data(), 0x90);
+    }
+    std::memcpy((unsigned char*) *(particalEffect + (unsigned)0x7), gParticalEffectInfoP5->data(), 0xF8);
+    std::memcpy((unsigned char*) *(particalEffect + (unsigned)0x8), gParticalEffectInfoP6->data(), 0xF8);
+    logObject((uintptr_t*)savedParticleP7);
+    if (savedParticleP7 != 0) {
+        std::memcpy((unsigned char*) *(particalEffect + (unsigned)0xA), gParticalEffectInfoP7->data(), 0xF8);
+        std::memcpy((unsigned char*) *(particalEffect + (unsigned)0xB), gParticalEffectInfoP8->data(), 0xF8);
+    }
 
-
-
+    */
 
 
 }

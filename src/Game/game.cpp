@@ -7,7 +7,10 @@ using ObjData = std::array<unsigned char, 0x2244 >;
 std::unique_ptr<GameState> gGameState;
 std::unique_ptr<CharData> gP1Data;
 std::unique_ptr<CharData> gP2Data;
-
+unsigned char* savedParticleP3;
+unsigned char* savedParticleP4;
+unsigned char* savedParticleP7;
+unsigned char* savedParticleP8;
 std::array<std::unique_ptr<ObjData>, 400 > gEntityList;
 std::unique_ptr<std::array<unsigned char, 0x16>> gEntityListInfo;
 std::unique_ptr<std::array<unsigned char, 0x88>> gParticalEffectInfo;
