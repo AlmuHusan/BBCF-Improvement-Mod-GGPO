@@ -4,24 +4,21 @@ namespace game {
 
 using CharData = std::array<unsigned char, 0x214C4 >;
 using ObjData = std::array<unsigned char, 0x2244 >;
+using AA_CModelInstance = std::array<unsigned char, 0x28>;
 std::unique_ptr<GameState> gGameState;
 std::unique_ptr<CharData> gP1Data;
 std::unique_ptr<CharData> gP2Data;
-unsigned char* savedParticleP3;
-unsigned char* savedParticleP4;
-unsigned char* savedParticleP7;
-unsigned char* savedParticleP8;
+//unsigned char* savedParticleP3;
 std::array<std::unique_ptr<ObjData>, 400 > gEntityList;
+std::array<std::unique_ptr<AA_CModelInstance>, 137 > gCModelList;
+std::unique_ptr<std::array<unsigned char, 0x1500>> gParticleSceneList;
 std::unique_ptr<std::array<unsigned char, 0x16>> gEntityListInfo;
 std::unique_ptr<std::array<unsigned char, 0x88>> gParticalEffectInfo;
-std::unique_ptr<std::array<unsigned char, 0x288>> gParticalEffectInfoP1;
-std::unique_ptr<std::array<unsigned char, 0x288>> gParticalEffectInfoP2;
-std::unique_ptr<std::array<unsigned char, 0x90>> gParticalEffectInfoP3;
-std::unique_ptr<std::array<unsigned char, 0x90>> gParticalEffectInfoP4;
-std::unique_ptr<std::array<unsigned char, 0xF8>> gParticalEffectInfoP5;
-std::unique_ptr<std::array<unsigned char, 0xF8>> gParticalEffectInfoP6;
-std::unique_ptr<std::array<unsigned char, 0xF8>> gParticalEffectInfoP7;
-std::unique_ptr<std::array<unsigned char, 0xF8>> gParticalEffectInfoP8;
+std::unique_ptr<std::array<unsigned char, 0x90>> gParticalEffectInfoP1;
+std::unique_ptr<std::array<unsigned char, 0x90>> gParticalEffectInfoP2;
+std::unique_ptr<std::array<unsigned char, 0xF8>> gParticalEffectInfoP3;
+std::unique_ptr<std::array<unsigned char, 0xF8>> gParticalEffectInfoP4;
+
 /// <summary>
 /// Gets the pointer data pointers in BBCF's memory, so we can access and write to them later for
 /// saving and loading state
@@ -68,14 +65,11 @@ void InitGameStatePointers()
     gP2Data = std::make_unique<CharData>();
     gEntityListInfo = std::make_unique<std::array<unsigned char, 0x16>>();
     gParticalEffectInfo = std::make_unique<std::array<unsigned char, 0x88>>();
-    gParticalEffectInfoP1 = std::make_unique<std::array<unsigned char, 0x288>>();
-    gParticalEffectInfoP2 = std::make_unique<std::array<unsigned char, 0x288>>();
-    gParticalEffectInfoP3 = std::make_unique<std::array<unsigned char, 0x90>>();
-    gParticalEffectInfoP4 = std::make_unique<std::array<unsigned char, 0x90>>();
-    gParticalEffectInfoP5 = std::make_unique<std::array<unsigned char, 0xF8>>();
-    gParticalEffectInfoP6 = std::make_unique<std::array<unsigned char, 0xF8>>();
-    gParticalEffectInfoP7 = std::make_unique<std::array<unsigned char, 0xF8>>();
-    gParticalEffectInfoP8 = std::make_unique<std::array<unsigned char, 0xF8>>();
+    gParticleSceneList = std::make_unique<std::array<unsigned char, 0x1500>>();
+    gParticalEffectInfoP1 = std::make_unique<std::array<unsigned char, 0x90>>();
+    gParticalEffectInfoP2 = std::make_unique<std::array<unsigned char, 0x90>>();
+    gParticalEffectInfoP3 = std::make_unique<std::array<unsigned char, 0xF8>>();
+    gParticalEffectInfoP4 = std::make_unique<std::array<unsigned char, 0xF8>>();
     auto get_address_or_log = [](std::string const& name, uintptr_t base, auto offsets) {
         uintptr_t addr = FindAddress(base, offsets);
 
@@ -90,9 +84,14 @@ void InitGameStatePointers()
     gGameState->time = (int*)(base + pointer_offsets::time);
     GetPlayerPointers(base + pointer_offsets::player1, gGameState->player1, "Player 1");
     GetPlayerPointers(base + pointer_offsets::player2, gGameState->player2, "Player 2");
-    for (int i = 0; i < gEntityList.max_size();i++) {
-        gEntityList[i]= std::make_unique<ObjData>();
+    for (int i = 0; i < gEntityList.max_size(); i++) {
+        gEntityList[i] = std::make_unique<ObjData>();
     }
+    for (int i = 0; i < gCModelList.max_size(); i++) {
+        gCModelList[i] = std::make_unique<AA_CModelInstance>();
+    }
+   
+
 }
 
 }
