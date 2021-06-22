@@ -343,7 +343,7 @@ static void SaveEntityList() {
     logger(particalmessage);
     auto entityListdref = *(uintptr_t*)(base + pointer_offsets::entityList);
     uintptr_t* currentEntity;
-    for (int i = 0;i < 399;i++) {
+    for (int i = 0;i < *entityListInfo+1;i++) {
         currentEntity = (uintptr_t*)(entityListdref + (unsigned)4*i + (unsigned)0x8);
         logObject(currentEntity);
         std::memcpy(gEntityList[i]->data(), (unsigned char*)(*currentEntity), 0x2244);
@@ -409,7 +409,7 @@ static void LoadEntityList() {
 
     auto entityListdref = *(uintptr_t*)(base + pointer_offsets::entityList);
     uintptr_t* currentEntity;
-    for (int i = 0;i < 399;i++) {
+    for (int i = 0;i < *entityListInfo + 1;i++) {
         currentEntity = (uintptr_t*)(entityListdref + (unsigned)4*i + (unsigned)0x8);
         std::memcpy( (unsigned char*)(*currentEntity), gEntityList[i]->data(), 0x2244);
     }
